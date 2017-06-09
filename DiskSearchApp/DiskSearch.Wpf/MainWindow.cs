@@ -7,9 +7,9 @@ using DiskSearch.Wpf.Properties;
 //Pizza.txt
 namespace DiskSearch.Wpf
 {
-    public partial class MainWindow : Window
+    public partial class MainWindow
     {
-        public OptionsWindow sf { get; set; }
+        public OptionsWindow optionsWindow { get; set; }
 
         public DispatcherTimer DispatcherTimer = new DispatcherTimer
         {

@@ -1,0 +1,109 @@
+using System;
+using System.Windows;
+using DiskSearch.Biz;
+using DiskSearch.Wpf.Properties;
+
+namespace DiskSearch.Wpf
+{
+    public partial class OptionsWindow
+    {
+        public MainWindow mainWindow { get; set; }
+        public OptionsWindow()
+        {
+            InitializeComponent();
+        }
+
+        private void IniCreateFileTextBox_GotFocus(object sender, RoutedEventArgs e)
+        {
+            IniCreateFileTextBox.Text = string.Empty;
+            IniCreateFileTextBox.AppendText(new Explorer().OpenExplorer());
+
+            if (!IniCreateFileTextBox.Text.Equals(""))
+            {
+                //Zugriff aufs MainWindow
+                mainWindow.CreateFileTextBox.Text = IniCreateFileTextBox.Text+@"\Abbild.txt";
+                IniCreateFileTextBox.AppendText(@"\Abbild.txt");
+            }
+            else if (IniCreateFileTextBox.Text.Equals(""))
+                IniCreateFileTextBox.AppendText("Create file path - example" + @"„D:\TEXT\TEXT.txt" + "\"");
+        }
+
+        private void IniCreateFileTextBox_Initialized(object sender, EventArgs e)
+        {
+            IniCreateFileTextBox.AppendText("Create file path - example" + @"„D:\TEXT\TEXT.txt" + "\"");
+        }
+
+        private void IniCreateFileTextBox_LostFocus(object sender, RoutedEventArgs e)
+        {
+            if (IniCreateFileTextBox.Text.Equals(""))
+                IniCreateFileTextBox.AppendText("Create file path - example" + @"„D:\TEXT\TEXT.txt" + "\"");
+        }
+
+        private void IniPathTextBox_GotFocus(object sender, RoutedEventArgs e)
+        {
+            IniPathTextBox.Text = string.Empty;
+            IniPathTextBox.AppendText(new Explorer().OpenExplorer());
+
+            if (IniPathTextBox.Text.Equals(""))
+            {
+                IniPathTextBox.AppendText(@"Begin at search path - example „D:\");
+            }
+            else if (!IniPathTextBox.Text.Equals(""))
+            //Zugriff aufs MainWindow
+            mainWindow.PathTextBox.Text = IniPathTextBox.Text;
+
+        }
+
+        private void IniPathTextBox_Initialized(object sender, EventArgs e)
+        {
+            IniPathTextBox.AppendText(@"Begin at search path - example „D:\");
+        }
+
+        private void IniPathTextBox_LostFocus(object sender, RoutedEventArgs e)
+        {
+            if (IniPathTextBox.Text.Equals(""))
+                IniPathTextBox.AppendText(@"Begin at search path - example „D:\");
+        }
+
+        private void IniTargetTextBox_GotFocus(object sender, RoutedEventArgs e)
+        {
+            IniTargetTextBox.Text = string.Empty;
+        }
+
+        private void IniTargetTextBox_Initialized(object sender, EventArgs e)
+        {
+            IniTargetTextBox.AppendText("Search file name - example „TEXT.txt" + "\"");
+        }
+
+        private void IniTargetTextBox_LostFocus(object sender, RoutedEventArgs e)
+        {
+            if (IniTargetTextBox.Text.Equals(""))
+                IniTargetTextBox.AppendText("Search file name - example „TEXT.txt" + "\"");
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            //var mainWCopie = new MainWindow();
+
+            //mainWCopie.PathTextBox.Text = IniPathTextBox.Text;
+            //mainWCopie.TargetTextBox.Text = IniTargetTextBox.Text;
+            //mainWCopie.Show();
+            mainWindow.CreateFileTextBox.Text = IniCreateFileTextBox.Text;
+            mainWindow.PathTextBox.Text = IniPathTextBox.Text;
+            mainWindow.TargetTextBox.Text = IniTargetTextBox.Text;
+
+            Settings.Default["iniCreateFileTextBox"] = IniCreateFileTextBox.Text;
+            Settings.Default["IniPathTextBox"] = IniPathTextBox.Text;
+            Settings.Default["IniTargetTextBox"] = IniTargetTextBox.Text;
+            Settings.Default.Save();
+            MessageBox.Show("saved");       
+           
+        }
+
+        private void Button_Click_1(object sender, RoutedEventArgs e)
+        {
+            Close();
+        }
+
+    }
+}

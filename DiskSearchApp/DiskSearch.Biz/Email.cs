@@ -7,7 +7,7 @@ namespace DiskSearch.Biz
 {
     public class Email
     {
-        public Task Send(string username, string passwort)
+        public Task Send(string username, string passwort, string attachmentPath)
         {
           return Task.Run(() =>
             {
@@ -25,7 +25,7 @@ namespace DiskSearch.Biz
                         Subject = "Greetings",
                         Body = "Hello"
                     };
-                    var attachment = new Attachment("D:\\TextWriter\\Abbild.txt");
+                    var attachment = new Attachment(attachmentPath);
                     mail.Attachments.Add(attachment);
                     mail.To.Add(username);
                     smtpServer.Send(mail);

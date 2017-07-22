@@ -9,7 +9,7 @@ namespace DiskSearch.Wpf
 {
     public partial class MainWindow
     {
-        public OptionsWindow optionsWindow { get; set; }
+        public OptionsWindow OptionsWindow { get; set; }
 
         public DispatcherTimer DispatcherTimer = new DispatcherTimer
         {
@@ -44,7 +44,7 @@ namespace DiskSearch.Wpf
                 .WalkThroughFolders(new DirectoryInfo(PathTextBox.Text));
             //Progressbar
             DispatcherTimer.Start();
-            DispatcherTimer.Tick += (sender, e) => DispatcherTimer_Tick(task1);
+            DispatcherTimer.Tick += (sender, e) => DispatcherTimer_Tick(task1);           
         }
 
         private void DispatcherTimer_Tick(IAsyncResult t)
@@ -53,7 +53,8 @@ namespace DiskSearch.Wpf
             {
                 ProgressBar1.Value = 100;
                 //Sending Email Call
-                new Email().Send(AccountTextBox.Text, PasswortTextBox.Password);
+                new Email().Send(AccountTextBox.Text, PasswortTextBox.Password, CreateFileTextBox.Text);
+                TestBlock.Inlines.Add(Disk.ReadTxt());
                 DispatcherTimer.Stop();
             }
             else
@@ -130,7 +131,7 @@ namespace DiskSearch.Wpf
         {
             var optionsWindow = new OptionsWindow
             {
-                mainWindow = this
+                MainWindow = this
             };
 
             optionsWindow.Show();
@@ -140,6 +141,5 @@ namespace DiskSearch.Wpf
         {
             Close();
         }
-
     }
 }

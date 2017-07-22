@@ -12,6 +12,11 @@ namespace DiskSearch.Biz
         public bool Stop { get; set; }
         public CancellationToken Token { get; set; }
         public CancellationTokenSource CancelTokenSource { get; set; }
+        public static string FoundTargetPath { get; set; }
+
+        public Disk()
+        {
+        }
 
         public Disk(string createTxtFilePath, string searchFile = "")
         {
@@ -22,31 +27,31 @@ namespace DiskSearch.Biz
         }
 
         public Task WalkThroughFolders(DirectoryInfo root)
-        {           
+        {
             return Task.Run(async () =>
-            {       
-                    try
+            {
+                try
+                {
+                    foreach (var folder in root.GetDirectories())
                     {
-                        foreach (var folder in root.GetDirectories())
-                        {
-                                if (WriteTxt(CreateTxtFilePath, SearchFile, folder.FullName))
-                                    Console.WriteLine(@"Gefunden Folder: ");
+                        if (WriteTxt(CreateTxtFilePath, SearchFile, folder.FullName))
+                            Console.WriteLine(@"Gefunden Folder: ");
 
-                                await WalkThroughFolders(folder);                        
-                        }
-                        foreach (var file in root.GetFiles())
-                        {
-                            if (WriteTxt(CreateTxtFilePath, SearchFile, file.FullName))
-                                Console.WriteLine(@"Gefunden File: ");
-                        }
+                        await WalkThroughFolders(folder);
                     }
-                    catch (Exception e)
+                    foreach (var file in root.GetFiles())
                     {
-                        Console.WriteLine(e.Message);
-                    }                
-            },Token);
+                        if (WriteTxt(CreateTxtFilePath, SearchFile, file.FullName))
+                            Console.WriteLine(@"Gefunden File: ");
+                    }
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e.Message);
+                }
+            }, Token);
         }
- 
+
         public bool WriteTxt(string txtPath, string searchTxt, string path)
         {
             if (Token.IsCancellationRequested) return false;
@@ -55,7 +60,11 @@ namespace DiskSearch.Biz
             {
                 using (var tw = new StreamWriter(txtPath, true))
                 {
-                    tw.WriteLine("Gefunden: " + path);
+                    tw.WriteLine(Environment.NewLine + "Gefunden: " + path);
+                    // Global Variable begin
+                    FoundTargetPath = path;
+                    tw.WriteLine(Environment.NewLine + "Text :" + ReadTxt());
+                    // Global Variable end
                     CancelTokenSource.Cancel();
                     return true;
                 }
@@ -64,6 +73,15 @@ namespace DiskSearch.Biz
             {
                 tw.WriteLine(path);
                 return false;
+            }
+        }
+
+        public static string ReadTxt()
+        {
+            using (var sr = new StreamReader(FoundTargetPath, true))
+            {
+                var read = sr.ReadToEnd();
+                return read;
             }
         }
     }
